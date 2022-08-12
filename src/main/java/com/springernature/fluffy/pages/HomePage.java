@@ -9,96 +9,102 @@ import org.openqa.selenium.support.How;
 
 import java.util.List;
 
-public class HomePage extends AbstractBasePage
-{
-    private final String pageURL = getBaseURL();
+public class HomePage extends AbstractBasePage {
+	private final String pageURL = getBaseURL();
 
-    @FindBy(how = How.CSS, using = "#query")
-    private WebElement searchTextInput;
+	@FindBy(how = How.CSS, using = "#query")
+	private WebElement searchTextInput;
 
-    @FindBy(how = How.CSS, using = "#search")
-    private WebElement searchButton;
+	@FindBy(how = How.CSS, using = "#search")
+	private WebElement searchButton;
 
-    @FindBy(how = How.CSS, using = "#number-of-search-results-and-search-terms > strong")
-    private List<WebElement> searchResult;
+	@FindBy(how = How.CSS, using = "#number-of-search-results-and-search-terms > strong")
+	private List<WebElement> searchResult;
 
-    @FindBy(how = How.CSS, using = "#search-options")
-    private WebElement searchOptionsButton;
+	@FindBy(how = How.CSS, using = "#search-options")
+	private WebElement searchOptionsButton;
 
-    @FindBy(how = How.CSS, using = "#advanced-search-link")
-    private WebElement advancedSearchLink;
+	@FindBy(how = How.CSS, using = "#advanced-search-link")
+	private WebElement advancedSearchLink;
 
-    @FindBy(how = How.CSS, using = ".lang > button > div")
-    private WebElement currentLanguage;
+	/*
+	 * @FindBy(how = How.CSS, using = ".lang > button > div") private WebElement
+	 * currentLanguage;
+	 */
 
-    @FindBy(how = How.CSS, using = ".change-language-Deutsch")
-    private WebElement changeLanguageDeutsch;
+	@FindBy(how = How.CSS, using = "div.cross-nav.cross-nav--wide > div.lang.flyout > button > span")
+	private WebElement clickLanuageEnglish;
 
-    public HomePage(WebDriver driver)
-    {
-        super(driver);
-    }
+	@FindBy(how = How.CSS, using = ".change-language-Deutsch")
+	private WebElement changeLanguageDeutsch;
 
-    public String getUrl() {
-        return pageURL;
-    }
+	@FindBy(how = How.XPATH, using = "//h2/a[starts-with(@title ,\"Ethnobotany of\")]")
+	private List<WebElement> resultList;
 
-    public HomePage searchFor(String text)
-    {
-        if(!searchTextInput.isDisplayed()){
-            fail("Search Text input not found in DOM");
-        }
-        searchTextInput.sendKeys(text);
-        searchButton.click();
-        return this;
-    }
+	public HomePage(WebDriver driver) {
+		super(driver);
+	}
 
-    private int getNumberOfResults()
-    {
-        String resultsStr = searchResult.get(0).getText().replace(",","");
-        return Integer.parseInt(resultsStr);
-    }
+	public String getUrl() {
+		return pageURL;
+	}
 
-    public HomePage returnsResults()
-    {
-        int numberOfResults = getNumberOfResults();
-        assertTrue("FAILED: Expected results but no results were found",numberOfResults > 0 );
-        return this;
-    }
+	public HomePage searchFor(String text) {
+		if (!searchTextInput.isDisplayed()) {
+			fail("Search Text input not found in DOM");
+		}
+		searchTextInput.sendKeys(text);
+		searchButton.click();
+		return this;
+	}
 
-    public HomePage checkNoResultsFound()
-    {
-        int numberOfResults = getNumberOfResults();
-        assertTrue("FAILED: Expected no result, but some results were found: "
-                + numberOfResults + " results", numberOfResults == 0);
-        return this;
-    }
+	private int getNumberOfResults() {
+		String resultsStr = searchResult.get(0).getText().replace(",", "");
+		return Integer.parseInt(resultsStr);
+	}
 
-    public HomePage checkSearchTerm(String term)
-    {
-        String actualSearchTerm = searchResult.get(1).getText().replace("'","");
-        assertEquals(term, actualSearchTerm);
-        return this;
-    }
+	public HomePage matchSearchResults() {
+		System.out.println("------------------->" + resultList.size());
+		assertTrue("FAILED: Expected results per page to be 20 but failed. ", resultList.size() == 20);
+		return this;
+	}
 
-    public AdvancedSearch navigateToAdvancedSearch()
-    {
-        searchOptionsButton.click();
-        advancedSearchLink.click();
+	public HomePage returnsResults() {
+		int numberOfResults = getNumberOfResults();
+		assertTrue("FAILED: Expected results but no results were found", numberOfResults > 0);
+		return this;
+	}
 
-        return new AdvancedSearch(driver);
-    }
+	public HomePage checkNoResultsFound() {
+		int numberOfResults = getNumberOfResults();
+		assertTrue("FAILED: Expected no result, but some results were found: " + numberOfResults + " results",
+				numberOfResults == 0);
+		return this;
+	}
 
-    public HomePage changeLanguageDeutsch()
-    {
-        changeLanguageDeutsch.click();
-        return this;
-    }
+	public HomePage checkSearchTerm(String term) {
+		String actualSearchTerm = searchResult.get(1).getText().replace("'", "");
+		assertEquals(term, actualSearchTerm);
+		return this;
+	}
 
-    public HomePage checkLanguage(String expected)
-    {
-        String current = currentLanguage.getText();
-        assertEquals(current, expected);
-        return this;
-    }
+	public AdvancedSearch navigateToAdvancedSearch() {
+		searchOptionsButton.click();
+		advancedSearchLink.click();
+
+		return new AdvancedSearch(driver);
+	}
+
+	public HomePage changeLanguageDeutsch() {
+		clickLanuageEnglish.click();
+		changeLanguageDeutsch.click();
+		return this;
+	}
+
+	public HomePage checkLanguage(String expected) {
+		String current = clickLanuageEnglish.getText();
+		assertEquals(current, expected);
+		return this;
+	}
+
 }

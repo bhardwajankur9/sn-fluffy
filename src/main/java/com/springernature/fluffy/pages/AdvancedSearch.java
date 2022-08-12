@@ -7,6 +7,7 @@ import org.openqa.selenium.support.How;
 
 import static org.junit.Assert.fail;
 
+
 public class AdvancedSearch extends AbstractBasePage {
 
     private static final String advancedSearchURL = "/advanced-search";
@@ -38,6 +39,7 @@ public class AdvancedSearch extends AbstractBasePage {
 
     @FindBy(how = How.CSS, using = "#submit-advanced-search")
     private WebElement advancedSearchButton;
+    
 
     public AdvancedSearch(WebDriver driver)
     {
